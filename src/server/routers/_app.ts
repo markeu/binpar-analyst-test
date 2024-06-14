@@ -1,24 +1,13 @@
-/**
- * This file contains the root router of your tRPC-backend
- */
-import { z } from 'zod';
+import { filterRouter } from './filters';
+import { pokemonRouter } from './pokemon';
 import { createCallerFactory, publicProcedure, router } from '../trpc';
-// import { postRouter } from './post';
+
 
 export const appRouter = router({
-  healthcheck: publicProcedure.query(() => 'Hello nextJs!'),
-
-  hello: publicProcedure
-  .input(
-    z.object({
-      text: z.string(),
-    }),
-  )
-  .query((opts) => {
-    return {
-      greeting: `hello ${opts.input.text}`,
-    };
-  }),
+  healthcheck: publicProcedure.query(() => 'Hey, Relax Running as expected !!'),
+  filters: filterRouter,
+  pokemon: pokemonRouter
+ 
 });
 
 export const createCaller = createCallerFactory(appRouter);
