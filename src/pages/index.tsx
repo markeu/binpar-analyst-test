@@ -5,6 +5,7 @@ import { trpc } from '../utils/trpc';
 import { InputSearch } from '~/components/InputSearch/InputSearch';
 import { Pokeball } from '~/assets/patterns';
 import CardPokemon from '~/components/CardPokemon/CardPokemon';
+import Pagination from '~/components/Pagination/Pagination';
 
 interface PokemonProps {
   url: string;
@@ -12,30 +13,67 @@ interface PokemonProps {
 }
 
 export default function Page() {
-  //move to a hook
-  const { data: pokemonData, error, isLoading } = trpc.pokemon.getAllPokemon.useQuery();
+  const queryResponse = trpc.pokemon.getAllPokemon.useQuery();
+  const searchData = trpc.pokemon.getSearchPokemonData.useQuery();
+
+  const { data: pokemonData, error, isLoading } = queryResponse;
+  const { data: searchDataResult } = searchData;
+
   const [pokemons, setPokemons] = useState<PokemonProps[]>([]);
   const [pokemonSearch, setPokemonSearch] = useState('');
+  const [nextUrl, setNextUrl] = useState<string | undefined>();
+  const [prevUrl, setPrevUrl] = useState<string | undefined>();
+  const [pageUrl, setPageUrl] = useState<string | undefined>();
 
-  const handleSearchPokemons = useCallback(async () => {
-    //create an endpoint to get it all,
-    //substitiute the state to this when clicked
-    setPokemonSearch(pokemonSearch.toLocaleLowerCase());
-    const pokemonsSearch = pokemonData?.results.filter(
-      ({ name }: PokemonProps) => name.includes(pokemonSearch),
-    );
-
-    setPokemons(pokemonsSearch || []);
-  }, [pokemonSearch, pokemonData]);
-
-  const handlePokemonsListDefault = useCallback(async () => {
-    setPokemons(pokemonData?.results || []);
-  }, [pokemonSearch]);
+  const pageDataQuery = trpc.pokemon.retrieveByUrl.useQuery(
+    { url: pageUrl || '' },
+    { enabled: !!pageUrl }
+  );
 
   useEffect(() => {
-    const isSearch = pokemonSearch.length >= 2;
-    isSearch ? handleSearchPokemons() : handlePokemonsListDefault()
-  }, [pokemonSearch, handlePokemonsListDefault, handleSearchPokemons]);
+    if (pokemonData) {
+      setPokemons(pokemonData.results || []);
+      setNextUrl(pokemonData.next);
+      setPrevUrl(pokemonData.previous);
+    }
+  }, [pokemonData]);
+
+  useEffect(() => {
+    if (pageDataQuery.data) {
+      setPokemons(pageDataQuery.data.results || []);
+      setNextUrl(pageDataQuery.data.next);
+      setPrevUrl(pageDataQuery.data.previous);
+    }
+  }, [pageDataQuery.data]);
+
+  const handleSearchPokemons = useCallback(() => {
+    if (searchDataResult) {
+      const pokemonsSearch = searchDataResult.results.filter(
+        ({ name }: PokemonProps) => name.toLowerCase().includes(pokemonSearch.toLowerCase())
+      );
+      setPokemons(pokemonsSearch);
+    }
+  }, [pokemonSearch, searchDataResult]);
+
+  useEffect(() => {
+    if (pokemonSearch.length >= 2) {
+      handleSearchPokemons();
+    } else {
+      handlePokemonsListDefault();
+    }
+  }, [pokemonSearch, handleSearchPokemons]);
+
+  const handlePokemonsListDefault = useCallback(() => {
+    if (pokemonData) {
+      setPokemons(pokemonData.results || []);
+      setNextUrl(pokemonData.next);
+      setPrevUrl(pokemonData.previous);
+    }
+  }, [pokemonData]);
+
+  const handlePageChange = useCallback((url?: string) => {
+    setPageUrl(url);
+  }, []);
 
   return (
     <Container>
@@ -47,28 +85,27 @@ export default function Page() {
         </div>
       </div>
       <Pokemons>
-        {pokemons && pokemons.map(pokemon => (
+        {pokemons.map(pokemon => (
           <CardPokemon key={pokemon.name} name={pokemon.name} />
         ))}
       </Pokemons>
+      <Pagination
+        nextUrl={nextUrl}
+        prevUrl={prevUrl}
+        onPageChange={handlePageChange}
+      />
     </Container>
-
   );
 }
 
+const Container = ({ children }: { children: ReactNode }) => (
+  <div className="relative flex flex-col items-stretch md:p-20">
+    {children}
+  </div>
+);
 
-const Container = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="relative flex flex-col items-stretch md:p-20">
-      {children}
-    </div>
-  );
-};
-
-const Pokemons = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="flex-1 grid grid-cols-3 gap-20">
-      {children}
-    </div>
-  );
-};
+const Pokemons = ({ children }: { children: ReactNode }) => (
+  <div className="flex-1 grid grid-cols-3 gap-20 mb-12">
+    {children}
+  </div>
+);
