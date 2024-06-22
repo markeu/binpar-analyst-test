@@ -9,6 +9,7 @@ import { About } from '../screens/About';
 import iconTypePokemon from '~/assets/types';
 import { pokemonColors } from '~/utils/color.utils';
 import { PokemonData, PokemonDetailProps } from '~/types/types';
+import Stats from '../screens/Stats';
 
 const PokemonDetail = () => {
     const router = useRouter();
@@ -72,6 +73,8 @@ const PokemonDetail = () => {
         switch (nameSectionActive) {
             case 'about':
                 return <About pokemon={pokemon} colorText={pokemonBackgroundColor} />;
+            case 'stats':
+                return pokemon.stats && <Stats stats={pokemon.stats} color={pokemonBackgroundColor} />;
             default:
                 return null;
         }
