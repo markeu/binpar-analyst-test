@@ -21,9 +21,9 @@ export default function Page() {
 
   const [pokemons, setPokemons] = useState<PokemonProps[]>([]);
   const [pokemonSearch, setPokemonSearch] = useState('');
-  const [nextUrl, setNextUrl] = useState<string | undefined>();
-  const [prevUrl, setPrevUrl] = useState<string | undefined>();
-  const [pageUrl, setPageUrl] = useState<string | undefined>();
+  const [nextUrl, setNextUrl] = useState<string>();
+  const [prevUrl, setPrevUrl] = useState<string>();
+  const [pageUrl, setPageUrl] = useState<string>();
 
   const pageDataQuery = trpc.pokemon.retrieveByUrl.useQuery(
     { url: pageUrl || '' },
@@ -79,7 +79,7 @@ export default function Page() {
     <Container>
       <div className='flex items-center mb-2'>
         <Pokeball />
-        <h1 className="mr-9 ml-9 text-xl font-bold text-black">Pokemon Binpar</h1>
+        <h1 className="mr-9 ml-9 text-xl font-bold text-black">Pokemon</h1>
         <div className="ml-auto">
           <InputSearch value={pokemonSearch} onChange={setPokemonSearch} />
         </div>
@@ -99,12 +99,13 @@ export default function Page() {
 }
 
 const Container = ({ children }: { children: ReactNode }) => (
+
   <div className="relative flex flex-col items-stretch md:p-20">
     {children}
   </div>
 );
-
 const Pokemons = ({ children }: { children: ReactNode }) => (
+
   <div className="flex-1 grid grid-cols-3 gap-20 mb-12">
     {children}
   </div>

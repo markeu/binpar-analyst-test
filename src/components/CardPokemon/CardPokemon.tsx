@@ -9,12 +9,16 @@ import { PokemonData, PokemonProps } from '~/types/types';
 
 const CardPokemon = ({ name }: { name: string }) => {
     const { data: pokemonData, error, isLoading } = trpc.pokemon.getPokemonByName.useQuery({ name });
+    
     const [pokemon, setPokemon] = useState({} as PokemonProps);
     const backgroundColor = pokemonColors[pokemon.backgroundColor] as string;
 
     useEffect(() => {
         if (!pokemonData) return;
         const { id, types, sprites } = pokemonData as PokemonData;
+
+
+
         let backgroundColor = types[0].type.name;
 
         if (backgroundColor === 'normal' && types.length > 1) {
@@ -37,7 +41,13 @@ const CardPokemon = ({ name }: { name: string }) => {
     }, [name, pokemonData]);
 
     return (
-        <Link href={`/pokemon/${name}`} passHref>
+        <Link href={{
+            pathname: `/pokemon/${name}`,
+            query: {
+                data: encodeURIComponent(JSON.stringify(pokemonData)),
+                backgroundColor: encodeURIComponent(backgroundColor)
+            },
+        }} passHref>
             <div className={`relative flex flex-col mt-10 text-gray-700 shadow-md bg-clip-border rounded-xl w-96 `} style={{ backgroundColor }}>
                 <div className="absolute right-0 top-neg-50 z-20 h-56 w-56">
                     <Image
@@ -46,7 +56,7 @@ const CardPokemon = ({ name }: { name: string }) => {
                         layout="fill"
                         objectFit="cover"
                         className="rounded-xl filter grayscale transition-all ease duration-400 hover:grayscale-0"
-                        priority 
+                        priority
                     />
                 </div>
                 <div className="p-7">

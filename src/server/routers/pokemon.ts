@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
 import { router, publicProcedure } from "~/server/trpc";
-import PokemonList, { PokemonData, PokemonGeneration, PokemonSpecies, Species } from '~/types/types';
+import { PokemonData, PokemonList } from '~/types/types';
 import { POKEMON_API_BASE_URL, createSchema, extractEvolutions, fetchJson } from '~/utils/pokemon.utils';
+
 
 
 export const pokemonRouter = router({
@@ -28,17 +29,20 @@ export const pokemonRouter = router({
         }),
 
     getPokemonSpecies: publicProcedure.input(createSchema({ name: z.string() }))
-        .query(async ({ input: { name } }) => fetchJson(`${POKEMON_API_BASE_URL}/pokemon-species/${name}`) as Promise<PokemonSpecies>),
+        .query(async ({ input: { name } }) => fetchJson(`${POKEMON_API_BASE_URL}/pokemon-species/${name}`)),
 
     retrieveByUrl: publicProcedure.input(createSchema({ url: z.string() }))
         .query(async ({ input: { url } }) => fetchJson(url)),
 
     getAllGenerations: publicProcedure
-        .query(async () => fetchJson(`${POKEMON_API_BASE_URL}/generation`) as Promise<PokemonGeneration>),
+        .query(async () => fetchJson(`${POKEMON_API_BASE_URL}/generation`)),
+
+    getPokemonType: publicProcedure.input(createSchema({ name: z.string() }))
+        .query(async ({ input: { name } }) => fetchJson(`${POKEMON_API_BASE_URL}/type/${name}`)),
 
     getPokemonEvolutions: publicProcedure.input(createSchema({ name: z.string() }))
         .query(async ({ input: { name } }) => {
-            const pokemonSpeciesData: PokemonSpecies = await fetchJson(
+            const pokemonSpeciesData = await fetchJson(
                 `${POKEMON_API_BASE_URL}/pokemon-species/${name}`
             );
 

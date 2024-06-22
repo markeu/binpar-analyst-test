@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, SVGProps } from "react";
 
 export interface PokemonTypesProps {
   name: string;
@@ -96,7 +96,7 @@ interface Move {
   version_group_details: VersionGroupDetail[];
 }
 
-interface Species {
+export interface Species {
   name: string;
   url: string;
 }
@@ -381,11 +381,45 @@ export interface PokemonData {
 }
 
 
+export interface PokemonDetailProps {
+    id: number;
+    number: string;
+    image: string;
+    specie: string;
+    height: string;
+    weight: string;
+    stats: {
+        hp: number;
+        attack: number;
+        defense: number;
+        speed: number;
+        specialAttack: number;
+        specialDefense: number;
+    };
+    type: PokemonTypesProps[];
+}
 
+export interface SpecieProps {
+  capture_rate: string;
+  base_happiness: string;
+  growth_rate: string;
+}
 
+export interface AboutProps {
+  pokemon: PokemonDetailProps;
+  colorText: string;
+}
 
+export interface ListItemProps {
+  label: string;
+  value: string | JSX.Element;
+}
 
-
+export interface WeaknesseProps {
+  color: string;
+  icon: ReactNode;
+  key: string | number;
+}
 
 
 
