@@ -57,9 +57,9 @@ export const About = ({ pokemon, colorText }: AboutProps) => {
 
     return (
         <section className="flex flex-col items-stretch">
-            <section className="flex flex-1 justify-evenly items-stretch mt-10">
+            <section className="flex flex-1 justify-evenly items-stretch ">
                 <div className="flex flex-col items-stretch">
-                    <h3 className={`text-2xl font-semibold mb-3 w-180 `} style={{ color: colorText }}>Pokédex Data</h3>
+                    <h3 className={`text-2xl font-semibold mb-3 w-180 `} style={{ color: colorText }}>Pokémon Data</h3>
                     <ul className="flex flex-col items-stretch list-none">
                         <ListItem label="Height" value={pokemon.height} />
                         <ListItem label="Weight" value={pokemon.weight} />
@@ -77,7 +77,6 @@ export const About = ({ pokemon, colorText }: AboutProps) => {
                         <ListItem label="Growth Rate" value={pokemonSpecie.growth_rate} />
                     </ul>
                 </div>
-
                 <div className="flex flex-col items-stretch">
                     <h3 className={`text-2xl font-semibold mb-3 w-180 `} style={{ color: colorText }}>Training</h3>
                     <ul className="flex flex-col items-stretch list-none">

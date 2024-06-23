@@ -10,10 +10,11 @@ import iconTypePokemon from '~/assets/types';
 import { pokemonColors } from '~/utils/color.utils';
 import { PokemonData, PokemonDetailProps } from '~/types/types';
 import Stats from '../screens/Stats';
+import Evolution from '../screens/Evolution';
 
 const PokemonDetail = () => {
     const router = useRouter();
-    const { name, data, backgroundColor } = router.query;
+    const { name, data, backgroundColor, pageUrl } = router.query;
     const [pokemon, setPokemon] = useState<PokemonDetailProps | null>(null);
     const [nameSectionActive, setNameSectionActive] = useState('about');
     const pokemonBackgroundColor = decodeURIComponent(backgroundColor as string);
@@ -65,20 +66,22 @@ const PokemonDetail = () => {
                 }),
             });
         }
-    }, [data]);
+    }, [data, name]);
 
     const screenSelected = useMemo(() => {
         if (!pokemon) return null;
-    
+
         switch (nameSectionActive) {
             case 'about':
                 return <About pokemon={pokemon} colorText={pokemonBackgroundColor} />;
             case 'stats':
                 return pokemon.stats && <Stats stats={pokemon.stats} color={pokemonBackgroundColor} />;
+            case 'evolution':
+                return <Evolution name={name} color={pokemonBackgroundColor} />;
             default:
                 return null;
         }
-    }, [nameSectionActive, pokemonBackgroundColor, pokemon]);
+    }, [nameSectionActive, pokemonBackgroundColor, pokemon, name]);
 
     const handleSectionChange = (section: string) => {
         if (section !== nameSectionActive) {
@@ -86,9 +89,10 @@ const PokemonDetail = () => {
         }
     };
 
+
     return (
-        <div className={`relative flex h-screen w-full`} style={{ backgroundColor: pokemonColors[pokemonBackgroundColor] }}>
-            <Link href="/" className="fixed top-10 left-4 z-10 flex items-center text-white hover:cursor-pointer">
+        <div className={`flex min-h-screen w-full flex-col`} style={{ backgroundColor: pokemonColors[pokemonBackgroundColor] }}>
+            <Link href="/"  className="fixed top-10 left-4 z-10 flex items-center text-white hover:cursor-pointer">
                 <FaChevronLeft size={40} />
             </Link>
 
@@ -116,21 +120,23 @@ const PokemonDetail = () => {
                     )}
                 </div>
 
-                <div className="flex items-center justify-around mb-[10px]">
-                    {['about', 'stats', 'evolution'].map(nameSection => (
-                        <SectionsNameButton
-                            key={nameSection}
-                            type="button"
-                            onClick={() => handleSectionChange(nameSection)}
-                            active={nameSection === nameSectionActive}
-                        >
-                            {nameSection}
-                        </SectionsNameButton>
-                    ))}
-                </div>
+                <div className="flex flex-col flex-1 justify-end">
+                    <div className="flex items-center justify-around mb-[10px]">
+                        {['about', 'stats', 'evolution'].map(nameSection => (
+                            <SectionsNameButton
+                                key={nameSection}
+                                type="button"
+                                onClick={() => handleSectionChange(nameSection)}
+                                active={nameSection === nameSectionActive}
+                            >
+                                {nameSection}
+                            </SectionsNameButton>
+                        ))}
+                    </div>
 
-                <div className="flex flex-col justify-center bg-white h-[320px] px-40 rounded-[45px] rounded-tl-[45px] rounded-tr-[45px]">
-                    {screenSelected}
+                    <div className="flex flex-col justify-center bg-white h-[320px] px-40 rounded-[45px] rounded-tl-[45px] rounded-tr-[45px]">
+                        {screenSelected}
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,12 +147,8 @@ const SectionsNameButton = ({ active, children, onClick }: any) => {
     return (
         <button
             className={`relative border-0 outline-0 w-[170px] bg-none text-[35px] leading-[38px] text-white ${active ? 'opacity-100' : 'opacity-40'} capitalize`}
-            onClick={onClick}
-        >
+            onClick={onClick}>
             {children}
-            <svg className="absolute top-[-34px] left-0 right-0 mx-auto z-0 w-[170px] h-auto">
-                <path fill="rgba(255, 255, 255, 0.08)" />
-            </svg>
         </button>
     );
 };

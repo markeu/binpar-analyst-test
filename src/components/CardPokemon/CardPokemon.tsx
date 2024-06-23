@@ -7,9 +7,9 @@ import iconTypePokemon from '~/assets/types';
 import { pokemonColors } from '~/utils/color.utils';
 import { PokemonData, PokemonProps } from '~/types/types';
 
-const CardPokemon = ({ name }: { name: string }) => {
+const CardPokemon = ({ name, pageUrl, onPageChange, }: { name: string, pageUrl: string | undefined, onPageChange: (url?: string) => void; }) => {
     const { data: pokemonData, error, isLoading } = trpc.pokemon.getPokemonByName.useQuery({ name });
-    
+
     const [pokemon, setPokemon] = useState({} as PokemonProps);
     const backgroundColor = pokemonColors[pokemon.backgroundColor] as string;
 
@@ -18,12 +18,13 @@ const CardPokemon = ({ name }: { name: string }) => {
         const { id, types, sprites } = pokemonData as PokemonData;
 
 
-
         let backgroundColor = types[0].type.name;
 
         if (backgroundColor === 'normal' && types.length > 1) {
             backgroundColor = types[1].type.name;
         }
+
+
 
         setPokemon({
             id,
@@ -40,14 +41,21 @@ const CardPokemon = ({ name }: { name: string }) => {
         });
     }, [name, pokemonData]);
 
+    const handleOnClick = () => {
+        onPageChange(pageUrl); // Trigger onPageChange with pageUrl
+    };
+
     return (
         <Link href={{
             pathname: `/pokemon/${name}`,
             query: {
                 data: encodeURIComponent(JSON.stringify(pokemonData)),
-                backgroundColor: encodeURIComponent(backgroundColor)
+                backgroundColor: encodeURIComponent(backgroundColor),
+                pageUrl,
             },
-        }} passHref>
+        }} passHref
+            onClick={handleOnClick}
+        >
             <div className={`relative flex flex-col mt-10 text-gray-700 shadow-md bg-clip-border rounded-xl w-96 `} style={{ backgroundColor }}>
                 <div className="absolute right-0 top-neg-50 z-20 h-56 w-56">
                     <Image

@@ -47,12 +47,34 @@ export const pokemonRouter = router({
             );
 
             if (pokemonSpeciesData.evolution_chain?.url) {
-                const evolutionData = await fetchJson(pokemonSpeciesData.evolution_chain.url);
-                const evolutions = extractEvolutions(evolutionData.chain);
-                return { result: evolutions };
+                try {
+                    const evolutionData = await fetchJson(pokemonSpeciesData.evolution_chain.url);
+                    const evolutions = extractEvolutions(evolutionData.chain);
+
+                    const urls = evolutions.map(pokemonEvolution =>
+                        fetchJson(`${POKEMON_API_BASE_URL}/pokemon/${pokemonEvolution.name}`)
+                    );
+                    const responses = await Promise.all(urls);
+                    const result = responses.map((response, index) => {
+
+                        const { id, sprites } = response;
+                        return {
+                            ...evolutions[index],
+                            number: `#${'000'.substr(id.toString().length)}${id}`,
+                            image: sprites.other['official-artwork'].front_default,
+                        };
+                    });
+
+                    return result;
+                } catch (error) {
+                    console.error('Error fetching Pokemon data:', error);
+                    throw error; 
+                }
             }
-            return null
+
+            return null; 
         })
+
 })
 
 

@@ -8,7 +8,7 @@ const Pagination = ({ nextUrl, prevUrl, onPageChange }: PaginationProps) => {
   return (
     <div className="flex justify-between mt-4">
       <button
-        className="border bg-black text-white py-2 px-4 rounded"
+        className="border bg-gray-800 text-white py-2 px-4 rounded"
         type="button"
         onClick={() => onPageChange(prevUrl)}
         disabled={!prevUrl}
@@ -16,7 +16,7 @@ const Pagination = ({ nextUrl, prevUrl, onPageChange }: PaginationProps) => {
         Prev
       </button>
       <button
-        className="border bg-black text-white py-2 px-4 rounded"
+        className="border bg-gray-800  text-white py-2 px-4 rounded"
         type="button"
         onClick={() => onPageChange(nextUrl)}
         disabled={!nextUrl}

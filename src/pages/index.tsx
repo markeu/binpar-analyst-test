@@ -75,6 +75,8 @@ export default function Page() {
     setPageUrl(url);
   }, []);
 
+
+
   return (
     <Container>
       <div className='flex items-center mb-2'>
@@ -86,7 +88,7 @@ export default function Page() {
       </div>
       <Pokemons>
         {pokemons.map(pokemon => (
-          <CardPokemon key={pokemon.name} name={pokemon.name} />
+          <CardPokemon key={pokemon.name} name={pokemon.name} pageUrl={pageUrl}  onPageChange={handlePageChange} />
         ))}
       </Pokemons>
       <Pagination
@@ -99,13 +101,12 @@ export default function Page() {
 }
 
 const Container = ({ children }: { children: ReactNode }) => (
-
   <div className="relative flex flex-col items-stretch md:p-20">
     {children}
   </div>
 );
-const Pokemons = ({ children }: { children: ReactNode }) => (
 
+const Pokemons = ({ children }: { children: ReactNode }) => (
   <div className="flex-1 grid grid-cols-3 gap-20 mb-12">
     {children}
   </div>

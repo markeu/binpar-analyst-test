@@ -32,7 +32,7 @@ const Stats = ({ stats, color }: StatsChartProps) => {
                             {stats[stat.field] || 0}
                         </span>
                     </div>
-                    <div className="flex items-center w-full h-4 bg-gray-200 rounded-full">
+                    <div className="flex items-center w-full h-1 bg-gray-200 rounded-full">
                         <div
                             className="h-full rounded-full"
                             style={{

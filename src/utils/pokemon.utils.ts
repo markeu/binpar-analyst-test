@@ -3,21 +3,41 @@ import { ChainType, PokemonData } from "~/types/types";
 
 export const { POKEMON_API_BASE_URL } = process.env;
 
-export const extractEvolutions = (chain: ChainType): { name: string }[] => {
-    const evolutions: { name: string }[] = [];
 
-    const traverseChain = (chain: ChainType) => {
-        evolutions.push({ name: chain.species.name });
+interface PokemonEvolvesProps {
+    name: string;
+    level: number;
+    image?: string;
+    number?: string;
+  }
 
-        if (chain.evolves_to.length > 0) {
-            for (const evolution of chain.evolves_to) {
-                traverseChain(evolution as unknown as ChainType);
-            }
-        }
+  interface EvolvesProps {
+    species: {
+      name: string;
     };
+    evolution_details: [{ min_level: number }];
+    evolves_to: EvolvesProps[];
+  }
 
-    traverseChain(chain);
-    return evolutions;
+export const extractEvolutions = ({
+    species,
+    evolves_to,
+    evolution_details,
+  }: EvolvesProps): PokemonEvolvesProps[] => {
+    let namesPokemons: PokemonEvolvesProps[] = [
+        {
+          name: species.name,
+          level: 0,
+        },
+      ];
+      if (evolution_details.length)
+        namesPokemons[0].level = evolution_details[0].min_level;
+
+      evolves_to.forEach((evolves: EvolvesProps) => {
+        namesPokemons = namesPokemons.concat(extractEvolutions(evolves));
+      });
+
+      return namesPokemons;
 };
 
 export const fetchJson = async (url: string) => {
