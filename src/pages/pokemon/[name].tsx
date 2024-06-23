@@ -12,9 +12,10 @@ import { PokemonData, PokemonDetailProps } from '~/types/types';
 import Stats from '../screens/Stats';
 import Evolution from '../screens/Evolution';
 
+
 const PokemonDetail = () => {
     const router = useRouter();
-    const { name, data, backgroundColor, pageUrl } = router.query;
+    const { name, data, backgroundColor } = router.query;
     const [pokemon, setPokemon] = useState<PokemonDetailProps | null>(null);
     const [nameSectionActive, setNameSectionActive] = useState('about');
     const pokemonBackgroundColor = decodeURIComponent(backgroundColor as string);
@@ -89,10 +90,9 @@ const PokemonDetail = () => {
         }
     };
 
-
     return (
         <div className={`flex min-h-screen w-full flex-col`} style={{ backgroundColor: pokemonColors[pokemonBackgroundColor] }}>
-            <Link href="/"  className="fixed top-10 left-4 z-10 flex items-center text-white hover:cursor-pointer">
+            <Link  href='/' className="fixed top-10 left-4 z-10 flex items-center text-white hover:cursor-pointer">
                 <FaChevronLeft size={40} />
             </Link>
 

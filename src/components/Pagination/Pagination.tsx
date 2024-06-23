@@ -1,25 +1,31 @@
-interface PaginationProps {
-  nextUrl?: string;
-  prevUrl?: string;
-  onPageChange: (url?: string) => void;
-}
+import { usePagination } from "~/contexts/PaginationContext";
 
-const Pagination = ({ nextUrl, prevUrl, onPageChange }: PaginationProps) => {
+const Pagination = () => {
+  const { paginationState, setPaginationState } = usePagination();
+
+  const fetchPage = (url?: string) => {
+    if (!url) return;
+    setPaginationState((prevState: any) => ({
+      ...prevState,
+      currentPageUrl: url
+    }));
+  };
+
   return (
     <div className="flex justify-between mt-4">
       <button
         className="border bg-gray-800 text-white py-2 px-4 rounded"
         type="button"
-        onClick={() => onPageChange(prevUrl)}
-        disabled={!prevUrl}
+        onClick={() => fetchPage(paginationState.prevPageUrl)}
+        disabled={!paginationState.prevPageUrl}
       >
         Prev
       </button>
       <button
         className="border bg-gray-800  text-white py-2 px-4 rounded"
         type="button"
-        onClick={() => onPageChange(nextUrl)}
-        disabled={!nextUrl}
+        onClick={() => fetchPage(paginationState.nextPageUrl)}
+        disabled={!paginationState.nextPageUrl}
       >
         Next
       </button>

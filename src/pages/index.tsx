@@ -1,48 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { trpc } from '../utils/trpc';
 
-import { InputSearch } from '~/components/InputSearch/InputSearch';
+import { trpc } from '../utils/trpc';
 import { Pokeball } from '~/assets/patterns';
-import CardPokemon from '~/components/CardPokemon/CardPokemon';
 import Pagination from '~/components/Pagination/Pagination';
+import { usePagination } from '~/contexts/PaginationContext';
+import CardPokemon from '~/components/CardPokemon/CardPokemon';
+import { InputSearch } from '~/components/InputSearch/InputSearch';
+import { GlobalStateProvider } from '~/contexts/GlobalStateContext';
 
 interface PokemonProps {
   url: string;
   name: string;
 }
 
-export default function Page() {
+function PageComponent() {
+  const { paginationState, setPaginationState } = usePagination();
   const queryResponse = trpc.pokemon.getAllPokemon.useQuery();
   const searchData = trpc.pokemon.getSearchPokemonData.useQuery();
+  const { currentPageUrl } = paginationState;
 
   const { data: pokemonData, error, isLoading } = queryResponse;
   const { data: searchDataResult } = searchData;
 
   const [pokemons, setPokemons] = useState<PokemonProps[]>([]);
   const [pokemonSearch, setPokemonSearch] = useState('');
-  const [nextUrl, setNextUrl] = useState<string>();
-  const [prevUrl, setPrevUrl] = useState<string>();
-  const [pageUrl, setPageUrl] = useState<string>();
 
   const pageDataQuery = trpc.pokemon.retrieveByUrl.useQuery(
-    { url: pageUrl || '' },
-    { enabled: !!pageUrl }
+    { url: currentPageUrl || '' },
+    { enabled: !!currentPageUrl }
   );
 
   useEffect(() => {
     if (pokemonData) {
       setPokemons(pokemonData.results || []);
-      setNextUrl(pokemonData.next);
-      setPrevUrl(pokemonData.previous);
+      setPaginationState({
+        nextPageUrl: pokemonData.next,
+        prevPageUrl: pokemonData.previous,
+      });
     }
   }, [pokemonData]);
 
   useEffect(() => {
     if (pageDataQuery.data) {
       setPokemons(pageDataQuery.data.results || []);
-      setNextUrl(pageDataQuery.data.next);
-      setPrevUrl(pageDataQuery.data.previous);
+      setPaginationState({
+        nextPageUrl: pageDataQuery.data.next,
+        prevPageUrl: pageDataQuery.data.previous
+      });
     }
   }, [pageDataQuery.data]);
 
@@ -66,16 +71,12 @@ export default function Page() {
   const handlePokemonsListDefault = useCallback(() => {
     if (pokemonData) {
       setPokemons(pokemonData.results || []);
-      setNextUrl(pokemonData.next);
-      setPrevUrl(pokemonData.previous);
+      setPaginationState({
+        nextPageUrl: pokemonData.next,
+        prevPageUrl: pokemonData.previous
+      });
     }
   }, [pokemonData]);
-
-  const handlePageChange = useCallback((url?: string) => {
-    setPageUrl(url);
-  }, []);
-
-
 
   return (
     <Container>
@@ -88,14 +89,10 @@ export default function Page() {
       </div>
       <Pokemons>
         {pokemons.map(pokemon => (
-          <CardPokemon key={pokemon.name} name={pokemon.name} pageUrl={pageUrl}  onPageChange={handlePageChange} />
+          <CardPokemon key={pokemon.name} name={pokemon.name} />
         ))}
       </Pokemons>
-      <Pagination
-        nextUrl={nextUrl}
-        prevUrl={prevUrl}
-        onPageChange={handlePageChange}
-      />
+      <Pagination/>
     </Container>
   );
 }
@@ -111,3 +108,12 @@ const Pokemons = ({ children }: { children: ReactNode }) => (
     {children}
   </div>
 );
+
+
+const page = () => (
+  <GlobalStateProvider>
+    <PageComponent/>
+  </GlobalStateProvider>
+)
+
+export default page
