@@ -11,6 +11,8 @@ import {
     SpecieProps,
     WeaknesseProps
 } from "~/types/types";
+import Spinner from '~/components/Spinner';
+import router from "next/router";
 
 export const About = ({ pokemon, colorText }: AboutProps) => {
     const [weaknesses, setWeaknesses] = useState<PokemonTypesProps[]>([]);
@@ -46,13 +48,15 @@ export const About = ({ pokemon, colorText }: AboutProps) => {
             });
         }
     }, [pokemonSpecies.data]);
+    
+    useEffect(() => {
+        if (pokemonDataType.error || pokemonSpecies.error) {
+            router.push('/404');
+        }
+    }, [pokemonDataType.error, pokemonSpecies.error, router]);
 
     if (pokemonDataType.isLoading || pokemonSpecies.isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (pokemonDataType.error || pokemonSpecies.error) {
-        return <div>Error loading data</div>;
+        return <Spinner />;
     }
 
     return (

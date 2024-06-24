@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import Image from 'next/image';
 import { ReactNode, useEffect, useState } from "react";
@@ -5,6 +6,9 @@ import { FaLongArrowAltRight } from 'react-icons/fa';
 
 import { trpc } from "~/utils/trpc";
 import { Pokeball } from "~/assets/patterns";
+import Spinner from '~/components/Spinner';
+import router from "next/router";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface PokemonEvolvesProps {
     name: string;
@@ -23,6 +27,17 @@ const Evolution = ({ name }: { name: string | string[] | undefined, color: strin
         }
     }, [pokemoneEvolutions.data])
 
+    useEffect(() => {
+        if (pokemoneEvolutions.error) {
+            router.push('/404');
+        }
+    }, [pokemoneEvolutions.error, router]);
+
+    if (pokemoneEvolutions.isLoading) {
+        return <Spinner />;
+    }
+    
+
     return (
         <div className="flex flex-row items-center justify-evenly w-full h-full py-20 px-0">
             {evolvesPokemon.length ? (
@@ -39,7 +54,7 @@ const Evolution = ({ name }: { name: string | string[] | undefined, color: strin
                                 <Pokeball />
                                 <Image
                                     className="mx-auto w-140 h-140 z-20 transition-transform duration-400 ease-in-out"
-                                    src={evolves.image}
+                                    src={evolves.image as string | StaticImport}
                                     alt="Pokemon"
                                     layout="fill"
                                     objectFit="cover"

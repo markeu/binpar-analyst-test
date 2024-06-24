@@ -8,6 +8,8 @@ import { usePagination } from '~/contexts/PaginationContext';
 import CardPokemon from '~/components/CardPokemon/CardPokemon';
 import { InputSearch } from '~/components/InputSearch/InputSearch';
 import { GlobalStateProvider } from '~/contexts/GlobalStateContext';
+import Filter from '~/components/Filter';
+import Spinner from '~/components/Spinner';
 
 interface PokemonProps {
   url: string;
@@ -83,15 +85,20 @@ function PageComponent() {
       <div className='flex items-center mb-2'>
         <Pokeball />
         <h1 className="mr-9 ml-9 text-xl font-bold text-black">Pokemon</h1>
+        {/* <Filter/> */}
         <div className="ml-auto">
           <InputSearch value={pokemonSearch} onChange={setPokemonSearch} />
         </div>
       </div>
-      <Pokemons>
-        {pokemons.map(pokemon => (
-          <CardPokemon key={pokemon.name} name={pokemon.name} />
-        ))}
-      </Pokemons>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Pokemons>
+          {pokemons.map(pokemon => (
+            <CardPokemon key={pokemon.name} name={pokemon.name} />
+          ))}
+        </Pokemons>
+      )}
       <Pagination/>
     </Container>
   );
