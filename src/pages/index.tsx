@@ -85,8 +85,9 @@ function PageComponent() {
       <div className='flex items-center mb-2'>
         <Pokeball />
         <h1 className="mr-9 ml-9 text-xl font-bold text-black">Pokemon</h1>
-        {/* <Filter/> */}
-        <div className="ml-auto">
+        
+        <div className="flex ml-auto items-center gap-4">
+        <Filter setPokemons={setPokemons}/>
           <InputSearch value={pokemonSearch} onChange={setPokemonSearch} />
         </div>
       </div>

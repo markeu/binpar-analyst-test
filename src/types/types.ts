@@ -59,7 +59,6 @@ interface Version2 {
   name: string;
   url: string;
 }
-
 interface VersionDetail {
   rarity: number;
   version: Version2;
@@ -349,7 +348,7 @@ interface Stat {
   effort: number;
   stat: Stat2;
 }
-interface Type2 {
+export interface Type2 {
   name: string;
   url: string;
 }

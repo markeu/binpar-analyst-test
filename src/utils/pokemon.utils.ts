@@ -1,5 +1,5 @@
 import { ZodTypeAny, ZodSchema, z } from "zod";
-import { ChainType, PokemonData } from "~/types/types";
+import { ChainType, PokemonData, PokemonList } from "~/types/types";
 
 export const { POKEMON_API_BASE_URL } = process.env;
 
@@ -87,3 +87,15 @@ export const getPokenmonByTypeAndGeneration = async(generationUrl: string, typeU
         pokemonType.some((pokemon: { name: string; }) => pokemon.name === generation.name)
     })
 } 
+
+export const getNames = (pokemonTypes: PokemonList, PokemonGenerations: PokemonList)  => {
+  const { results: typesResults = [] } = pokemonTypes || {};
+  const { results: generationsResults = [] } = PokemonGenerations || {};
+
+  const names = [
+    ...typesResults.flatMap(({ name }) => (name ? [name] : [])),
+    ...generationsResults.flatMap(({ name }) => (name ? [name] : [])),
+  ];
+
+  return names;
+}

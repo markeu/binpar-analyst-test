@@ -5,7 +5,7 @@ const Pagination = () => {
 
   const fetchPage = (url?: string) => {
     if (!url) return;
-    setPaginationState((prevState: any) => ({
+    setPaginationState((prevState) => ({
       ...prevState,
       currentPageUrl: url
     }));

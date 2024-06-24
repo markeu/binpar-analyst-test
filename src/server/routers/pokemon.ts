@@ -37,6 +37,9 @@ export const pokemonRouter = router({
     getAllGenerations: publicProcedure
         .query(async () => fetchJson(`${POKEMON_API_BASE_URL}/generation`)),
 
+    getAllTypes: publicProcedure
+        .query(async () => fetchJson(`${POKEMON_API_BASE_URL}/type`)),
+
     getPokemonType: publicProcedure.input(createSchema({ name: z.string() }))
         .query(async ({ input: { name } }) => fetchJson(`${POKEMON_API_BASE_URL}/type/${name}`)),
 
@@ -68,11 +71,11 @@ export const pokemonRouter = router({
                     return result;
                 } catch (error) {
                     console.error('Error fetching Pokemon data:', error);
-                    throw error; 
+                    throw error;
                 }
             }
 
-            return null; 
+            return null;
         })
 
 })
