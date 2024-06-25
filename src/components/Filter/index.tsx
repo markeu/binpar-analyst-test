@@ -2,7 +2,7 @@ import { useState } from "react";
 import {  fetchJson, getNames } from "~/utils/pokemon.utils";
 import { trpc } from "~/utils/trpc";
 
-const Filter = ({setPokemons}) => {
+const Filter = () => {
     const [isOpen, setIsOpen] = useState(false);
     const PokemonGenerations = trpc.pokemon.getAllGenerations.useQuery();
     const pokemonTypes = trpc.pokemon.getAllTypes.useQuery();
@@ -22,9 +22,7 @@ const Filter = ({setPokemons}) => {
         event.preventDefault();
 
         closeDropdown();
-        const generation = await fetchJson(`https://pokeapi.co/api/v2/type/${item}`)
-        console.log(generation.pokemon, '=====');
-        // setPokemons(generation)
+    
      
     };
     return (

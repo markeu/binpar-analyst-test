@@ -1,5 +1,5 @@
 import { ZodTypeAny, ZodSchema, z } from "zod";
-import { ChainType, PokemonData, PokemonList } from "~/types/types";
+import { ChainType, PokemonList } from "~/types/types";
 
 export const { POKEMON_API_BASE_URL } = process.env;
 
