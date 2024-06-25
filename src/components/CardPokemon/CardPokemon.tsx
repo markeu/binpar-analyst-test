@@ -6,6 +6,7 @@ import { trpc } from '~/utils/trpc';
 import iconTypePokemon from '~/assets/types';
 import { pokemonColors } from '~/utils/color.utils';
 import { PokemonData, PokemonProps } from '~/types/types';
+import Spinner from '../Spinner';
 
 
 const CardPokemon = ({ name }: { name: string }) => {
@@ -38,6 +39,8 @@ const CardPokemon = ({ name }: { name: string }) => {
     }, [name, pokemonData]);
 
 
+    if (isLoading) return <Spinner />;
+    if (error) return <div>Error loading Pokémon data</div>;
 
     return (
         <Link href={{
@@ -68,9 +71,7 @@ const CardPokemon = ({ name }: { name: string }) => {
                     {pokemon.type && (
                         <div className="flex flex-row items-center mt-5">
                             {pokemon.type.map(pokemonType => (
-                                <div className={`flex flex-row items-center p-1.5 bg-${pokemonType.color} rounded-sm`} key={pokemonType.name}>
-                                    {pokemonType.icon} <span className='ml-0.5 text-sm font-sm leading-3.5 capitalize'> {pokemonType.name}</span>
-                                </div>
+                                <TypeBadge key={pokemonType.name} type={pokemonType}/>
                             ))}
                         </div>
                     )}
@@ -81,3 +82,10 @@ const CardPokemon = ({ name }: { name: string }) => {
 };
 
 export default CardPokemon;
+
+
+const TypeBadge = ({ type }: { type: any }) => (
+    <div className={`flex flex-row items-center p-1.5 bg-${type.color} rounded-sm`} >
+        {type.icon} <span className='ml-0.5 text-sm font-sm leading-3.5 capitalize'>{type.name}</span>
+    </div>
+);

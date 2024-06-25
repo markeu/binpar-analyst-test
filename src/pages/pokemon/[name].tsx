@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FaChevronLeft } from 'react-icons/fa';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { About } from '../screens/About';
 import iconTypePokemon from '~/assets/types';
@@ -84,11 +84,12 @@ const PokemonDetail = () => {
         }
     }, [nameSectionActive, pokemonBackgroundColor, pokemon, name]);
 
-    const handleSectionChange = (section: string) => {
+    const handleSectionChange = useCallback((section: string) => {
         if (section !== nameSectionActive) {
             setNameSectionActive(section);
         }
-    };
+    }, [nameSectionActive]);
+    
 
     return (
         <div className={`flex min-h-screen w-full flex-col`} style={{ backgroundColor: pokemonColors[pokemonBackgroundColor] }}>

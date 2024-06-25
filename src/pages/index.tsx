@@ -85,9 +85,9 @@ function PageComponent() {
       <div className='flex items-center mb-2'>
         <Pokeball />
         <h1 className="mr-9 ml-9 text-xl font-bold text-black">Pokemon</h1>
-        
+
         <div className="flex ml-auto items-center gap-4">
-        <Filter setPokemons={setPokemons}/>
+          <Filter />
           <InputSearch value={pokemonSearch} onChange={setPokemonSearch} />
         </div>
       </div>
@@ -100,7 +100,7 @@ function PageComponent() {
           ))}
         </Pokemons>
       )}
-      <Pagination/>
+      <Pagination />
     </Container>
   );
 }
@@ -119,9 +119,7 @@ const Pokemons = ({ children }: { children: ReactNode }) => (
 
 
 const page = () => (
-  <GlobalStateProvider>
-    <PageComponent/>
-  </GlobalStateProvider>
+  <PageComponent />
 )
 
 export default page

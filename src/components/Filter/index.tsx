@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {  fetchJson, getNames } from "~/utils/pokemon.utils";
+import { getNames } from "~/utils/pokemon.utils";
 import { trpc } from "~/utils/trpc";
 
 const Filter = () => {
@@ -7,7 +7,7 @@ const Filter = () => {
     const PokemonGenerations = trpc.pokemon.getAllGenerations.useQuery();
     const pokemonTypes = trpc.pokemon.getAllTypes.useQuery();
 
-  
+
     const pokemonTypesAndGeneration = getNames(pokemonTypes.data, PokemonGenerations.data);
 
     const toggleDropdown = () => {
@@ -18,12 +18,12 @@ const Filter = () => {
         setIsOpen(false);
     };
 
-    const handleItemClick = async (event, item) => {
+    const handleItemClick = async (event: any, item: any) => {
         event.preventDefault();
 
         closeDropdown();
-    
-     
+
+
     };
     return (
         <div className="relative inline-block">
